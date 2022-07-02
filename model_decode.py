@@ -44,6 +44,6 @@ if __name__ == '__main__':
         for i in range(len(input)):
             for en, index in en2index.items():
                 if index == input[i]:
-                    r = en.replace("@@ ", "")
-            s.append(r)
+                    r = en.replace("@@", "")
+                    s.append(r)
     print(s)
