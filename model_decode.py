@@ -15,7 +15,7 @@ if __name__ == '__main__':
     en2index = load(PATH_INDEX)
     # print(en2index)
 
-    words = ['I', 'say', "that"]
+    words = ['I', 'want', "to"]
     word2id = [en2index[i] for i in words]
     input = torch.LongTensor(word2id)
 
