@@ -1,6 +1,6 @@
 import torch
 import numpy as np
-from CNN_train_decode.model import Net
+from model import Net
 
 PATH_MODEL = "./train_state/train_state_73000.pth"
 PATH_INDEX = "en_index.npy"
