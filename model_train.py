@@ -1,3 +1,5 @@
+from math import sqrt
+
 import torch
 import h5py
 import torch.nn as nn
@@ -37,7 +39,7 @@ if __name__ == '__main__':
         #     # 服从均匀分布U(−a,a)，par应该是2维及以上
         #     # 用以保证初始化的值不会因其大小而在层数的传递时导致方差变化，使通过每一层网络时保证输入和输出的方差相同
         #     nn.init.xavier_uniform_(par, gain=1)
-        rang = torch.sqrt(1 / vocab_size)
+        rang = sqrt(1 / vocab_size)
         nn.init.uniform_(par, a=-rang, b=rang)
 
     # 创建损失函数，使用交叉熵代价函数
