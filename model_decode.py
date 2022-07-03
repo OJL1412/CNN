@@ -32,12 +32,13 @@ if __name__ == '__main__':
 
     steps = 50
 
-    for i in range(steps - 1):
-        words = input[i:i + 3].to(device)  # 每次取三个词
+    for i in range(steps):
+        words = input[i:i+3].to(device)  # 每次取三个词的索引
+        print(words)
         output = torch.argmax(model.decode(words))  # 解码获得最可能的下一个词
         # print(output)
         input = input.to(device)
-        input = torch.cat((input, output.unsqueeze(0)), dim=-1)  # 拼接成一个53个词的一维tensor
+        input = torch.cat((input, output.unsqueeze(0)), dim=0)  # 拼接成一个53个词的一维tensor
         # print(input)
 
     # print("**" * 50)

@@ -60,12 +60,15 @@ class Net(nn.Module):
         return output
 
     def decode(self, word):
-        word_emb = self.w_emb(word)     # 对输入词汇进行词嵌入，得到一个向量矩阵
+        word_emb = self.w_emb(word)     # 对输入的三个词汇的索引进行词嵌入，得到一个向量矩阵
+        # print(word_emb)
 
         word_emb = word_emb.view(1, -1)     # 合并第2维和第3维，得到（1，32*词汇个数），32*词汇个数即所有词的特征个数
+        # print(word_emb)
 
         output = self.classifier(self.net(word_emb))    # 将处理后的向量矩阵放入两层神经模型进行进一步的处理
-        log_max_prob = F.log_softmax(output, dim=-1)
+        log_max_prob = F.log_softmax(output, dim=1)
+        # print(log_max_prob)
 
         return log_max_prob
 
