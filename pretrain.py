@@ -78,20 +78,20 @@ def file_handle_index():
 # batch_size: 这个batch中包含几个句子，seql: 这些句子中最长句子的长度（短句使用padding，映射索引为0，填充到相同长度）
 # yield学习: 当执行到yield关键词的代码时，函数会暂时返回，下次调用该函数时，会从上次暂停的地方继续运行，起到一个暂时返回的作用
 def file_handle_batch(data, srcf):
-    index = 0           # 设置索引为0
-    batch = []          # 以列表形式初始化一个batch
-    matrix_line = 1     # 初始设置矩阵行数为1
-    batch_flag = True   # 是否进行数据切分的标志
+    batch = []  # 以列表形式初始化一个batch
+    index = 0  # 设置索引为0
+    ready = True  # 是否进行数据切分的标志
+    matrix_line = 1  # 初始设置矩阵行数为1
 
     for line in srcf:
         tmp = line.strip()
         if tmp:
             tmp = tmp.split()
-            if batch_flag:
-                seql = len(tmp)     # 获得最长句子的长度
-                batch_size = int(2560 / seql)     # 由于每个batch包含的token数目不超过2560，所以用2560/seql确定batch中的句子数，也是矩阵的行数
-                batch = []      # 创建一个空batch
-                batch_flag = False  # 置为False，表示当前正在进行数据切分为batch
+            if ready:
+                seql = len(tmp)  # 获得最长句子的长度
+                batch_size = int(2560 / seql)  # 由于每个batch包含的token数目不超过2560，所以用2560/seql确定batch中的句子数，也是矩阵的行数
+                batch = []  # 创建一个空batch
+                ready = False  # 置为False，表示当前正在进行数据切分为batch
 
                 if matrix_line < batch_size:
                     # 矩阵行数 < batch包含的句子数时，矩阵行数+1，
@@ -99,10 +99,10 @@ def file_handle_batch(data, srcf):
                     # 对每行的数据进行填充，seql-len(tmp)表示剩余的空位，用0进行填充，将处理好的数据存入batch
                     batch.append([data.get(w, 1) for w in tmp] + [0 for _ in range(seql - len(tmp))])
             else:
-                batch_flag = True   # 置为True，表示可进行下一个batch的处理及存储
-                matrix_line = 1     # 将下一个矩阵的行数置1处理
+                ready = True  # 置为True，表示可进行下一个batch的处理及存储
+                matrix_line = 1  # 将下一个矩阵的行数置1处理
                 yield batch, index  # 暂时返回batch及相应索引
-                index += 1
+                index += 1  # 记录数据数量
     if batch:
         yield batch, index
 
@@ -111,14 +111,14 @@ def file_handle_batch(data, srcf):
 # ndata:一个只有一个元素的向量，存src中数据的数量；nword:一个只有一个元素的向量，存第3步收集的词典大小
 def file_save(data, srcf, f5):
     index = 0
-    group = f5.create_group("group")    # 创建名为“group”的group
+    group = f5.create_group("group")  # 创建名为“group”的group
 
     for batch, index in file_handle_batch(data, srcf):  # 获得batch及对应的索引
         matrix_array = np.array(batch, dtype=np.int32)  # 创建ndarray，用来存储batch
-        group.create_dataset(str(index), data=matrix_array) # 创建数据集，以索引作为数据集的名字，batch作为数据集的数据
+        group.create_dataset(str(index), data=matrix_array)  # 创建数据集，以索引大小作为数据集的名字，batch作为数据集的数据
 
-    f5["ndata"] = np.array(index, dtype=np.int32)
-    f5["nword"] = np.array(len(data), dtype=np.int32)
+    f5["ndata"] = np.array(index, dtype=np.int32)  # 存src中数据的数量，即索引，将其写入文件的主键"ndata"下
+    f5["nword"] = np.array(len(data), dtype=np.int32)  # 存收收集的词典大小，将其写入文件的主键"nword"下
 
 
 if __name__ == '__main__':

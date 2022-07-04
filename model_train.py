@@ -7,21 +7,21 @@ import torch.optim as op
 from model_CNN import Net
 
 # hdf5文件路径
-# PATH_F5 = "F:/PyTorch学习/BPE_handle/result.hdf5"
-PATH_F5 = "result.hdf5"
+PATH_F5 = "F:/PyTorch学习/BPE_handle/result.hdf5"
+# PATH_F5 = "result.hdf5"
 
 # hdf5文件读出及词典大小获取
 f = h5py.File(PATH_F5, "r")
-vocab_size = f["nword"][()]
+vocab_size = f["nword"][()]  # 取出主键为nword的所有键值，即收集的词典大小（读取的数据是标量，用[()]）
 
 # GPU
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 # device = torch.device("cpu")
 
 # 相关参数设置
-CONTEXT_SIZE = 3    # 设置的给定的词数
-num_epoch = 5      # 训练轮次
-curb = 0            # 起始组数
+CONTEXT_SIZE = 3  # 设置的给定的词数
+num_epoch = 5  # 训练轮次
+curb = 0  # 起始组数
 
 if __name__ == '__main__':
 
@@ -78,7 +78,7 @@ if __name__ == '__main__':
 
             # 每100个batch打印一次loss值
             if curb % 100 == 0:
-                print('loss: {:.6f}  [batch_num:{}]'.format(loss/vocab_size, curb))
+                print('loss: {:.6f}  [batch_num:{}]'.format(loss / vocab_size, curb))
                 print('--' * 30)
 
             # 每处理1000个batch保存一次模型参数

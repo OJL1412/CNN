@@ -67,7 +67,7 @@ class Net(nn.Module):
         # print(word_emb)
 
         output = self.classifier(self.net(word_emb))    # 将处理后的向量矩阵放入两层神经模型进行进一步的处理
-        log_max_prob = F.log_softmax(output, dim=1)
+        log_max_prob = F.log_softmax(output, dim=-1)
         # print(log_max_prob)
 
         return log_max_prob

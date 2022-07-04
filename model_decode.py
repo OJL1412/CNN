@@ -15,7 +15,7 @@ if __name__ == '__main__':
     en2index = load(PATH_INDEX)
     # print(en2index)
 
-    words = ['I', 'want', "to"]
+    words = ['I', 'like', "to"]
     word2id = [en2index[i] for i in words]
     input = torch.LongTensor(word2id)
     # print(input)
@@ -30,9 +30,15 @@ if __name__ == '__main__':
     net_state_dict = torch.load(PATH_MODEL)
     model.load_state_dict(net_state_dict)
 
-    steps = 50
+    # pretrain_dict = torch.load(PATH_MODEL)
+    # net_state_dict = model.state_dict()
+    # pretrain_dict_1 = {k: v for k, v in pretrain_dict.items() if k in net_state_dict}
+    # net_state_dict.update(pretrain_dict_1)
+    # model.load_state_dict(net_state_dict)
 
-    for i in range(steps):
+    get_words = 50
+
+    for i in range(get_words):
         words = input[i:i+3].to(device)  # 每次取三个词的索引
         print(words)
         output = torch.argmax(model.decode(words))  # 解码获得最可能的下一个词
@@ -53,3 +59,7 @@ if __name__ == '__main__':
                 r = en.replace("@@", "")
                 result_words.append(r)
     print(result_words)
+
+
+
+# 问题：解码得到的50个词后半部分重复
