@@ -66,11 +66,9 @@ class Net(nn.Module):
         word_emb = word_emb.view(1, -1)     # 合并第2维和第3维，得到（1，32*词汇个数），32*词汇个数即所有词的特征个数
         # print(word_emb)
 
-        output = self.classifier(self.net(word_emb))    # 将处理后的向量矩阵放入两层神经模型进行进一步的处理
-        log_max_prob = F.log_softmax(output, dim=-1)
-        # print(log_max_prob)
+        output = torch.argmax(self.classifier(self.net(word_emb)))    # 将处理后的向量矩阵放入两层神经模型进行进一步的处理
 
-        return log_max_prob
+        return output
 
 
 

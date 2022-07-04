@@ -22,13 +22,15 @@ if __name__ == '__main__':
     # print("**"*50)
 
     model = Net(len(en2index))
+
+    net_state_dict = torch.load(PATH_MODEL, map_location='cpu')
+    model.load_state_dict(net_state_dict)
+
     model.eval()
 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    model.to(device)
 
-    net_state_dict = torch.load(PATH_MODEL)
-    model.load_state_dict(net_state_dict)
+    model.to(device)
 
     # pretrain_dict = torch.load(PATH_MODEL)
     # net_state_dict = model.state_dict()
@@ -39,9 +41,9 @@ if __name__ == '__main__':
     get_words = 50
 
     for i in range(get_words):
-        words = input[i:i+3].to(device)  # 每次取三个词的索引
-        print(words)
-        output = torch.argmax(model.decode(words))  # 解码获得最可能的下一个词
+        words = input[i:i + 3].to(device)  # 每次取三个词的索引
+        # print(words)
+        output = model.decode(words)  # 解码获得最可能的下一个词
         # print(output)
         input = input.to(device)
         input = torch.cat((input, output.unsqueeze(0)), dim=0)  # 拼接成一个53个词的一维tensor
@@ -54,12 +56,9 @@ if __name__ == '__main__':
     result_words = []
 
     for i in range(len(input)):
-        for en, index in en2index.items():
-            if index == input[i]:
-                r = en.replace("@@", "")
-                result_words.append(r)
-    print(result_words)
+        s = [en for en, index in en2index.items() if index == input[i]]
+        result_words.append("".join(s))
+
+    print(" ".join(result_words).replace("@@ ", ""))
 
 
-
-# 问题：解码得到的50个词后半部分重复
