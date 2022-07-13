@@ -128,5 +128,6 @@ if __name__ == '__main__':
     word = file_handle_index()
     with open(PATH_B_S, "r", encoding="utf-8") as frd:
         with h5py.File(PATH_F5, "w") as f5:
-            file_save(word, frd, f5)
+            print("正在处理")
+            file_save(frd, word, f5)
             print("hdf5文件保存成功")
