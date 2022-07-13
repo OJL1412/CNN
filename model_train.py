@@ -7,7 +7,7 @@ import torch.optim as op
 from model_CNN import Net
 
 # hdf5文件路径
-PATH_F5 = "F:/PyTorch学习/BPE_handle/result.hdf5"
+PATH_F5 = "/test_file/result.hdf5"
 # PATH_F5 = "result.hdf5"
 
 # hdf5文件读出及词典大小获取
@@ -56,8 +56,8 @@ if __name__ == '__main__':
         print('**' * 15, "训练轮次{}".format(epoch + 1), '**' * 15)
         curb = 0
 
-        for index in f["group"]:
-            input = torch.LongTensor(f["group"][index][:])
+        for index in f["src"]:
+            input = torch.LongTensor(f["src"][index][:])
             n_data = input.size(-1) - CONTEXT_SIZE
             target = input.narrow(1, CONTEXT_SIZE, n_data)
 
